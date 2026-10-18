@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import logging
 
 # API metadata
 APP_TITLE = "Autograde AI"
@@ -39,3 +40,14 @@ except ImportError:
     pass
 GEMINI_API_URL = os.getenv("GEMINI_API_KEY")
 LLAMA_CLOUD_API_KEY = os.getenv("LLAMA_CLOUD_API_KEY")
+
+# Logging configuration
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s" 
+)
+
+logger = logging.getLogger(__name__)
+
+
+

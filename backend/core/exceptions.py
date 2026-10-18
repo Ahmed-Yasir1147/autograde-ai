@@ -2,11 +2,12 @@
 
 class FileBaseError(Exception):
     """Base class for file-related exceptions."""
-    def __init__(self, message: str):
+    def __init__(self, message: str, file_name: str):
         super().__init__(message)
         self.message = message
+        self.file_name = file_name
 
-class FileSizeExceededError(FileBaseError):
+class IllegalFileSizeError(FileBaseError):
     """Exception raised when the uploaded file size exceeds the allowed limit."""
     def __init__(self, message: str = "Uploaded file size exceeds the allowed limit."):
         super().__init__(message)
@@ -29,13 +30,13 @@ class ModelAPIBaseError(Exception):
 
 class ModelAPIConnectionError(ModelAPIBaseError):
     """Exception raised when there is a connection error with the model API."""
-    def __init__(self, message: str = "Failed to connect to the model API."):
-        super().__init__(message)
+    def __init__(self, message: str = "Failed to connect to the model API.", model_name: str = "Gemini"):
+        super().__init__(model_name + message)
 
-class ModelLimitReacherError(ModelAPIBaseError):
+class ModelLimitReachedError(ModelAPIBaseError):
     """Exception raised when the model API limit is reached."""
-    def __init__(self, message: str = "Model API limit reached."):
-        super().__init__(message)
+    def __init__(self, message: str = "Model API limit reached.", model_name: str = "Gemini"):
+        super().__init__(model_name + message)
 
 class IncorrectFormattingError(ModelAPIBaseError):
     """Exception raised when the input data is incorrectly formatted for the model API."""
