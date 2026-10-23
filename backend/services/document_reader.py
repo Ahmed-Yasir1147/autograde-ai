@@ -21,8 +21,8 @@ class DocumentReader:
             logger.error(f"File {file_name} size exceeds maximum allowed size of {MAX_FILE_SIZE_BYTES} bytes.")
             raise IllegalFileSizeError(f"File {file_name} size exceeds maximum allowed size of {MAX_FILE_SIZE_BYTES} bytes.", file_name)
         elif file_size == 0:
-            logger.error("File {file_name} is empty.")
-            raise IllegalFileSizeError("File {file_name} is empty.", file_name)
+            logger.error(f"File {file_name} is empty.")
+            raise IllegalFileSizeError(f"File {file_name} is empty.", file_name)
 
         mime_type = magic.from_buffer(file_bytes, mime=True)
         if mime_type not in SUPPORTED_MIME_TYPES:

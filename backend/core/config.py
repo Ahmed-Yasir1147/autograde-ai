@@ -23,6 +23,7 @@ SUPPORTED_MIME_TYPES = {
     "image/jpeg": "jpeg",
     "image/jpg": "jpg",
     "image/webp": "webp",
+    "application/octet-stream": "binary",
 }
 SUPPORTED_EXTENSIONS = {".pdf", ".doc", ".docx", ".png", ".jpeg", ".jpg", ".webp"}
 
@@ -38,16 +39,19 @@ try:
     load_dotenv()
 except ImportError:
     pass
-GEMINI_API_URL = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 LLAMA_CLOUD_API_KEY = os.getenv("LLAMA_CLOUD_API_KEY")
 
 # Logging configuration
 logging.basicConfig(
     level=logging.DEBUG,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s" 
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
 logger = logging.getLogger(__name__)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("llama_cloud").setLevel(logging.WARNING)
 
 
 

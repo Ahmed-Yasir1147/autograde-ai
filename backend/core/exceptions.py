@@ -1,26 +1,45 @@
 """Defines custom exceptions for the application."""
 
+from typing import List, Dict
+from enum import Enum
+
+class FileValidationErrors(Enum):
+    """Enumeration of file validation errors."""
+    ILLEGAL_FILE_SIZE = "IllegalFileSizeError"
+    UNSUPPORTED_FILE_TYPE = "UnsupportedFileTypeError"
+
 class FileBaseError(Exception):
     """Base class for file-related exceptions."""
-    def __init__(self, message: str, file_name: str):
+    def __init__(self, message: str):
         super().__init__(message)
         self.message = message
-        self.file_name = file_name
 
 class IllegalFileSizeError(FileBaseError):
     """Exception raised when the uploaded file size exceeds the allowed limit."""
-    def __init__(self, message: str = "Uploaded file size exceeds the allowed limit."):
+    def __init__(self, message: str = "Uploaded file size exceeds the allowed limit.", file_name: str = ""):
         super().__init__(message)
+        self.file_name = file_name
 
 class UnsupportedFileTypeError(FileBaseError):
     """Exception raised when the uploaded file type is not supported."""
-    def __init__(self, message: str = "Uploaded file type is not supported."):
+    def __init__(self, message: str = "Uploaded file type is not supported.", file_name: str = ""):
         super().__init__(message)
+        self.file_name = file_name
+
+class FileValidationError(FileBaseError):
+    """Exception raised when there is an error during file validation."""
+    def __init__(
+            self, 
+            message: str = "An error occurred while validating the file.", 
+            failed_files: Dict[str, FileValidationErrors] = "" # file_names -> Dict[file_name, error]
+        ): 
+        super().__init__(message)
+        self.file_names = failed_files
 
 class FileProcessingError(FileBaseError):
     """Exception raised when there is an error during file processing."""
-    def __init__(self, message: str = "An error occurred while processing the file."):
-        super().__init__(message)
+    def __init__(self, message: str = "An error occurred while processing the file.", file_name: str = ""):
+        super().__init__(message, file_name)
 
 class ModelAPIBaseError(Exception):
     """Base class for model API-related exceptions."""
@@ -47,3 +66,6 @@ class IncorrectGradingError(ModelAPIBaseError):
     """Exception raised when the model API returns an incorrect grading result."""
     def __init__(self, message: str = "Incorrect grading result from the model API."):
         super().__init__(message)
+
+
+

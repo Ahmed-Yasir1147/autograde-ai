@@ -46,7 +46,7 @@ class ExamFormatter:
 
     
     def format_answer_paper(self, answer_paper: str, exam_paper: str, answer_paper_filename: str = "") -> str:   
-        logger.info(f"Formatting answer paper {answer_paper_filename}")
+        logger.info(f"Formatting answer paper: {answer_paper_filename}")
         """Formats an answer paper according to the specified schema using the Gemini API."""
         return retry_gemini_requests(
             lambda model_code: self._format_answer_paper(answer_paper, exam_paper, model_code),
@@ -72,7 +72,7 @@ class ExamFormatter:
             },
         )
         formatted_answer_paper = AnswerPaper.model_validate_json(response.output_text)
-        if not self._validate_answer_paper(formatted_answer_paper, exam_paper):
+        if not self._validate_answer_paper(formatted_answer_paper.model_dump_json(), exam_paper):
             raise IncorrectFormattingError("Incorrectly formatted answer paper.")
         return formatted_answer_paper.model_dump_json()
 

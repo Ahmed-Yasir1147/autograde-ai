@@ -1,10 +1,11 @@
 from google import genai
 from typing import List, Dict
 from core.config import logger
+from core.exceptions import IllegalFileSizeError, UnsupportedFileTypeError, FileValidationError, FileValidationErrors
 from llama_cloud import LlamaCloud
-from document_reader import DocumentReader
-from exam_formatter import ExamFormatterGemini
-from exam_grader import ExamGrader
+from .document_reader import DocumentReader
+from .exam_formatter import ExamFormatter
+from .exam_grader import ExamGrader
 import asyncio
 
 class GradingPipeline:
@@ -12,7 +13,7 @@ class GradingPipeline:
 
     def __init__(self, gemini_client: genai.Client, llama_cloud: LlamaCloud):
         self.document_reader = DocumentReader(llama_cloud)
-        self.exam_formatter = ExamFormatterGemini(gemini_client)
+        self.exam_formatter = ExamFormatter(gemini_client)
         self.exam_grader = ExamGrader(gemini_client)
 
     async def grade_exams(
@@ -24,17 +25,22 @@ class GradingPipeline:
             concurrency: int = 3,
         ) -> tuple[List[str], List[str]]:
         """The main function to grade exams using the GradingPipeline."""
-        # validation failure raises exception which stops pipeline & API will pass it to the frontend
-        self.document_reader.validate_doc(exam_paper, "exam_paper")
-        self.document_reader.validate_doc(answer_key, "answer_key")
+        # validation failure raises exception, where we collect the relevant file & API will pass it to the frontend
+        failed_files = {}
+        
+        self._try_validation(exam_paper, "exam_paper", failed_files)
+        self._try_validation(answer_key, "answer_key", failed_files)
         for filename, answer_paper in answer_papers.items():
-            self.document_reader.validate_doc(answer_paper, filename)
+            self._try_validation(answer_paper, filename, failed_files)
 
+        if failed_files:
+            logger.error(f"Failed to validate the following files: {failed_files}")
+            raise FileValidationError(failed_files=failed_files)
 
-        exam_paper_text = self.document_reader.read_doc(exam_paper) if isinstance(exam_paper, bytes) else exam_paper
+        exam_paper_text = self.document_reader.read_doc(exam_paper, "examp_paper") if isinstance(exam_paper, bytes) else exam_paper
         formatted_exam_paper = self.exam_formatter.format_exam_paper(exam_paper_text)
-      
-        answer_key_text = self.document_reader.read_doc(answer_key) if isinstance(answer_key, bytes) else answer_key
+
+        answer_key_text = self.document_reader.read_doc(answer_key, "answer_key") if isinstance(answer_key, bytes) else answer_key
         formatted_answer_key = self.exam_formatter.format_answer_key(answer_key_text, formatted_exam_paper)
         
         graded_answer_papers = []
@@ -94,7 +100,7 @@ class GradingPipeline:
         """Formats and grade single answer paper."""
         try:
             if isinstance(answer_paper, bytes):
-                answer_paper_text = await asyncio.to_thread(self.document_reader.read_doc, answer_paper)
+                answer_paper_text = await asyncio.to_thread(self.document_reader.read_doc, answer_paper, answer_paper_filename)
             else:
                 answer_paper_text = answer_paper
             formatted_answer_paper = await asyncio.to_thread(
@@ -113,4 +119,20 @@ class GradingPipeline:
             )
             graded_answer_papers.append(graded_answer_paper)
         except Exception as e:
+            logger.error(f"An error occurred while grading the answer paper {answer_paper_filename}: {e}")
             failed_answer_papers.append(graded_answer_paper)
+
+    def _try_validation(
+            self, 
+            file_bytes: str| bytes, 
+            file_name: str = "", 
+            failed_files: dict[str, FileValidationErrors] = {}
+        ):
+        """Validates if file_bytes is a valid file and adds it to failed_files if not."""
+        if isinstance(file_bytes, bytes):
+            try:
+                self.document_reader.validate_doc(file_bytes, file_name)
+            except IllegalFileSizeError as e:
+                failed_files[file_name] = FileValidationErrors.ILLEGAL_FILE_SIZE
+            except UnsupportedFileTypeError as e:
+                failed_files[file_name] = FileValidationErrors.UNSUPPORTED_FILE_TYPE

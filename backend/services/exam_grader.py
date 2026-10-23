@@ -24,7 +24,7 @@ class ExamGrader:
         ):
         """Grades an exam answer paper according to the given answer key and instructions using the Gemini API."""
         return retry_gemini_requests(
-            lambda model_code: self._grade_exam_paper(exam_paper_json, answer_paper_json, answer_key_json, instructions, model_code),
+            lambda model_code: self._grade_exam_paper(exam_paper_json, answer_paper_json, answer_key_json, answer_paper_filename, instructions, model_code),
             answer_paper_filename
         )
     
@@ -33,9 +33,11 @@ class ExamGrader:
               exam_paper_json: str, 
               answer_paper_json: str, 
               answer_key_json: str,
+              answer_paper_filename: str = "",
               instructions: str = "",  
               model_code: str = GEMINI_STANDARD_MODEL_CODE
         ):
+        logger.info(f"Grading exam paper: {answer_paper_filename}")
         prompt = f"""
             You have to grade an exam answer paper and return response in desired format.
             Exam paper: {exam_paper_json}

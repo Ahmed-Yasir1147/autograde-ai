@@ -1,11 +1,10 @@
 """Collection of reuseable helper functions for the backend."""
 
 import copy
-from core.config import STANDARD_MODEL_CODE, FALLBACK_MODEL_CODE
+from core.config import GEMINI_STANDARD_MODEL_CODE, GEMINI_FALLBACK_MODEL_CODE, logger
 from google.genai.errors import APIError
 import time
-from core.config import logger
-from core.exceptions import ModelLimitReachedError, ModelBaseError
+from core.exceptions import ModelLimitReachedError, ModelAPIBaseError
 
 def inline_schema(model, property_name="subquestions", depth=4):
         """Generates an inline JSON schema for a given Pydantic model, resolving nested references up to a specified depth."""
@@ -27,23 +26,23 @@ def inline_schema(model, property_name="subquestions", depth=4):
 
 def retry_gemini_requests(function, filename="", max_retries=3):
     """Retries a function call with exponential backoff in case of exceptions."""
-    model_code = STANDARD_MODEL_CODE
+    model_code = GEMINI_STANDARD_MODEL_CODE
     while True:
         try_count = 0
         try:
-            result = function(model=model_code)
+            return function(model_code=model_code)
         except APIError as e:
             logger.warning(f"Rate limit reached. Retrying in {try_count * 2} seconds...")
             time.sleep(try_count * 2) 
-            model_code = FALLBACK_MODEL_CODE 
-            try_count *= 1
+            model_code = GEMINI_FALLBACK_MODEL_CODE 
+            try_count += 1
             # Max retry: 3
             if try_count > 3:
                 logger.error(f"Exceeded maximum retry attempts due to rate limit for {filename} {function.__name__}.")
                 raise ModelLimitReachedError(model_name="Gemini")# Re-raise other non-rate-limit API errors
         except Exception as e:
             logger.error(f"An error occurred while executing the function {filename} {function.__name__}: {e}")
-            raise ModelBaseError(f"An error occurred while executing the function {filename} {function.__name__}: {e}")
+            raise ModelAPIBaseError(f"An error occurred while executing the function {filename} {function.__name__}: {e}")
 
 def singleton(cls):
     """Decorator to create a single instance of a class."""
