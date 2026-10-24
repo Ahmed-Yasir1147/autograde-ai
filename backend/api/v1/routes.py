@@ -6,7 +6,7 @@ current_dir = pathlib.Path(__file__).parent.resolve()
 sys.path.append(str(current_dir.parent.parent))
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from core.config import logger, GEMINI_API_KEY
+from core.config import logger, GEMINI_API_KEY, GRADING_SCHEME
 from core.exceptions import FileValidationError
 from services.grading_pipeline import GradingPipeline
 from models.routes_schemas import GradingRequest, GradingResponse
@@ -31,6 +31,7 @@ async def grade_exams(
             grading_request.answer_papers,
             grading_request.answer_key,
             grading_request.instructions,
+            grading_request.grading_scheme,
             grading_request.concurrency
         )
         return GradingResponse(
@@ -54,3 +55,9 @@ async def grade_exams(
                 "message": f"An error occurred while grading the exam: {e}"
             }
         )
+
+
+@router.get("/get_grading_scheme")
+async def get_grading_scheme():
+    """Send grading scheme to frontend"""
+    return GRADING_SCHEME

@@ -53,5 +53,19 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 logging.getLogger("llama_cloud").setLevel(logging.WARNING)
 
+# Grading configuration
+GRADING_SCHEME = {
+    "A+": (100, 95),
+    "A": (94, 90),
+    "B+": (89, 85),
+    "B": (84, 80),
+    "C+": (79, 75),
+    "C": (74, 70),
+    "D": (69, 60),
+    "E": (59, 50),
+    "F": (49, 0),
+}
+
+
 
 

@@ -29,6 +29,7 @@ def read_root():
         'description': APP_DESCRIPTION,
         'endpoints': {
             'POST   /api/v1/grade_exams': "Grade exams",
+            'GET    /api/v1/get_grading_scheme': "Get grading scheme",
         },
     }
 

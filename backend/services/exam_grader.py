@@ -1,7 +1,7 @@
 from google import genai
 from models.graded_paper_schemas import GradedPaper
 from utils.helper_functions import inline_schema, singleton
-from core.config import logger, GEMINI_STANDARD_MODEL_CODE
+from core.config import logger, GEMINI_STANDARD_MODEL_CODE, GRADING_SCHEME
 from utils.helper_functions import retry_gemini_requests
 import json
 from typing import List
@@ -19,12 +19,13 @@ class ExamGrader:
               exam_paper_json: str, 
               answer_paper_json: str, 
               answer_key_json: str,
-              instructions: str = "", 
+              instructions: str, 
+              grading_scheme: dict,
               answer_paper_filename: str = ""
         ):
         """Grades an exam answer paper according to the given answer key and instructions using the Gemini API."""
         return retry_gemini_requests(
-            lambda model_code: self._grade_exam_paper(exam_paper_json, answer_paper_json, answer_key_json, answer_paper_filename, instructions, model_code),
+            lambda model_code: self._grade_exam_paper(exam_paper_json, answer_paper_json, answer_key_json, answer_paper_filename, instructions, grading_scheme, model_code),
             answer_paper_filename
         )
     
@@ -33,8 +34,9 @@ class ExamGrader:
               exam_paper_json: str, 
               answer_paper_json: str, 
               answer_key_json: str,
-              answer_paper_filename: str = "",
-              instructions: str = "",  
+              answer_paper_filename: str,
+              instructions: str,  
+              grading_scheme: dict,
               model_code: str = GEMINI_STANDARD_MODEL_CODE
         ):
         logger.info(f"Grading exam paper: {answer_paper_filename}")
@@ -71,6 +73,11 @@ class ExamGrader:
         # During validation, any error or false means failure in grading
         try:
             if self._validate_marks_range(graded_exam_dict, exam_paper_dict):
+                graded_exam_dict["grade"] = self._specify_grade(
+                    grading_scheme,
+                    exam_paper_dict["marks"],
+                    graded_exam_dict["marks_obtained"]
+                )
                 return json.dumps(graded_exam_dict)
             else:
                 raise IncorrectGradingError("Incorrect grading result from the model API.")
@@ -127,6 +134,7 @@ class ExamGrader:
             
             
     def _validate_nested_questions(self, graded_questions: List, exam_questions: List) -> bool:
+        """Validate for nested subjective questions."""
         for i in range(len(graded_questions)):
             if not self._in_range(graded_questions[i]["marks_obtained"], exam_questions[i]["marks"]):
                 return False
@@ -140,10 +148,21 @@ class ExamGrader:
         return True
 
     def _in_range(self, value: float, max: float, min: float = 0.0) -> bool:
+        """Check if value is within the range of max and min."""
         if value < min or value > max:
             return False
         else:
             return True
+
+    def _specify_grade(self, grading_scheme: dict, total_marks: float, obtained_marks: float) -> str:
+        """Specify the grade based on the grading scheme."""
+        percentile = (obtained_marks / total_marks) * 100
+        for grade, range in grading_scheme.items():
+            upper_bound = range[0]
+            lower_bound = range[1]
+            if percentile <=  upper_bound and percentile >= lower_bound:
+                return grade
+        return "F"
 
 
 

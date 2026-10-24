@@ -1,12 +1,14 @@
 from google import genai
 from typing import List, Dict
-from core.config import logger
+from core.config import logger, GRADING_SCHEME
 from core.exceptions import IllegalFileSizeError, UnsupportedFileTypeError, FileValidationError, FileValidationErrors
+from models.routes_schemas import GradingResponse
 from llama_cloud import LlamaCloud
 from .document_reader import DocumentReader
 from .exam_formatter import ExamFormatter
 from .exam_grader import ExamGrader
 import asyncio
+import json
 
 class GradingPipeline:
     """A pipleline combining document reader, exam formatter and exam grader orchestrating the entire grading process."""
@@ -21,10 +23,13 @@ class GradingPipeline:
             exam_paper: bytes | str, 
             answer_papers: Dict[str, List[bytes]] | Dict[str, List[str]], # name & list of answer papers
             answer_key: bytes | str,
-            instructions: str,
+            instructions: str = "",
+            grading_scheme: dict = GRADING_SCHEME,
             concurrency: int = 3,
-        ) -> tuple[List[str], List[str]]:
+        ) -> GradingResponse:
         """The main function to grade exams using the GradingPipeline."""
+        grading_scheme = grading_scheme if self._validate_grading_scheme(grading_scheme) else GRADING_SCHEME
+
         # validation failure raises exception, where we collect the relevant file & API will pass it to the frontend
         failed_files = {}
         
@@ -46,9 +51,13 @@ class GradingPipeline:
         graded_answer_papers = []
         failed_answer_papers = []
         
-        await self._grade_exams_concurrently(answer_papers, formatted_exam_paper, formatted_answer_key, instructions, concurrency, graded_answer_papers, failed_answer_papers)
+        await self._grade_exams_concurrently(answer_papers, formatted_exam_paper, formatted_answer_key, instructions, grading_scheme, concurrency, graded_answer_papers, failed_answer_papers)
         
-        return (graded_answer_papers, failed_answer_papers)
+        return self._format_grading_response(
+            graded_answer_papers, 
+            failed_answer_papers, 
+            formatted_exam_paper
+        )
 
     
 
@@ -58,6 +67,7 @@ class GradingPipeline:
             formatted_exam_paper: str, 
             formatted_answer_key: str, 
             instructions: str, 
+            grading_scheme: dict,
             concurrency: int, 
             graded_answer_papers: List[str], 
             failed_answer_papers: List[str]
@@ -82,6 +92,7 @@ class GradingPipeline:
                             formatted_exam_paper, 
                             formatted_answer_key, 
                             instructions, 
+                            grading_scheme,
                             graded_answer_papers, 
                             failed_answer_papers
                         )
@@ -94,6 +105,7 @@ class GradingPipeline:
             formatted_exam_paper: str, 
             formatted_answer_key: str, 
             instructions: str, 
+            grading_scheme: dict,
             graded_answer_papers: List[str], 
             failed_answer_papers: List[str]
         ):
@@ -115,6 +127,7 @@ class GradingPipeline:
                 formatted_answer_paper, 
                 formatted_answer_key, 
                 instructions,
+                grading_scheme,
                 answer_paper_filename
             )
             graded_answer_papers.append(graded_answer_paper)
@@ -136,3 +149,58 @@ class GradingPipeline:
                 failed_files[file_name] = FileValidationErrors.ILLEGAL_FILE_SIZE
             except UnsupportedFileTypeError as e:
                 failed_files[file_name] = FileValidationErrors.UNSUPPORTED_FILE_TYPE
+
+    def _validate_grading_scheme(self, grading_scheme: str) -> bool:
+        """Validates if grading scheme is a valid dictionary."""
+        # min => 0, max => 100
+        # sum of subtract + 1 = 101
+        # first element > second element
+        sum = 0
+        for grade, range in grading_scheme.items():
+            first = range[0]
+            second = range[1]
+            if first < 0 or second > 100 or first > second:
+                return False
+            sum += second - first + 1
+        return sum == 101
+
+    def _format_grading_response(self, graded_answer_papers: List[str], failed_answer_papers: List[str], exam_paper: str) -> GradingResponse:   
+        """Formats the grading response as:
+            total_papers: int
+            successful_papers: int
+            failed_papers: int
+            total_marks: float
+            average_marks: float
+            minimum_marks: float
+            maximum_marks: float
+            graded_answer_papers: List[str]
+            failed_answer_papers: List[str]
+        """
+        exam_paper_dict = json.loads(exam_paper)
+        total_papers = len(graded_answer_papers) + len(failed_answer_papers)
+        successful_papers = len(graded_answer_papers)
+        failed_papers = len(failed_answer_papers)
+        total_marks = exam_paper_dict["marks"]
+        average_marks = 0.0
+        minimum_marks = total_marks
+        maximum_marks = 0.0
+        for answer_paper in graded_answer_papers:
+            answer_paper_dict = json.loads(answer_paper)
+            marks_obtained = answer_paper_dict["marks_obtained"]
+            if marks_obtained > maximum_marks:
+                maximum_marks = marks_obtained
+            if marks_obtained < minimum_marks:
+                minimum_marks = marks_obtained
+            average_marks += marks_obtained
+        average_marks /= successful_papers
+        return GradingResponse(
+            total_papers=total_papers,
+            successful_papers=successful_papers,
+            failed_papers=failed_papers,
+            total_marks=total_marks,
+            average_marks=average_marks,
+            minimum_marks=minimum_marks,
+            maximum_marks=maximum_marks,
+            graded_answer_papers=graded_answer_papers,
+            failed_answer_papers=failed_answer_papers
+        )

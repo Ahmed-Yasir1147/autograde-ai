@@ -487,15 +487,12 @@ Compare structural accuracy separately from subjective grading quality.
 Structural accuracy includes correct question mapping, missing-answer detection, mark ceilings, section totals, and overall totals.
 """
 
-success, failed = asyncio.run(grading_pipeline.grade_exams(
+grading_response = asyncio.run(grading_pipeline.grade_exams(
     exam_paper,
     {"answer_paper_1": answer_paper_1, "answer_paper_2": answer_paper_2, "answer_paper_3": answer_paper_3},
     answer_key,
     instructions
 ))
 
-print("Success")
-print(success)
-print("Failed")
-print(failed)
+print(grading_response.model_dump_json())
 
