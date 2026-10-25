@@ -1,0 +1,945 @@
+/* =========================================================
+   AutoGrade AI - shared stylesheet
+   1. Variables  2. Base  3. Navbar  4. Hero  5. Cards
+   6. Upload zone  7. Paste-text toggle  8. Student papers
+   9. Grading instructions  10. Buttons  11. Responsive
+   ========================================================= */
+
+/* 1. VARIABLES - edit colours, radii and shadows here */
+:root {
+    --bg-start: #F0EAE4;
+    --bg-end: #DFEDEC;
+    --text-main: #1d1d1f;
+    --text-muted: #6b6b70;
+    --border-dashed: #cfcfd2;
+    --surface: #ffffff;
+    --surface-soft: #f6f5f3;
+    --accent-grad: linear-gradient(90deg, #e9967a, #d9667a);
+    --badge-required-bg: #fde0e0;
+    --badge-required-text: #c0392b;
+    --badge-neutral-bg: #e9e8e6;
+    --btn-dark: #2F4858;
+
+    --radius-card: 15px;
+    --radius-inner: 16px;
+    --radius-small: 12px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgba(40, 40, 50, .04), 0 8px 24px rgba(40, 40, 50, .07), 0 24px 48px rgba(40, 40, 50, .05);
+    --shadow-small: 0 1px 2px rgba(40, 40, 50, .06), 0 3px 8px rgba(40, 40, 50, .05);
+    --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* 2. BASE */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 0px 0px;
+    background: linear-gradient(to right, var(--bg-start), var(--bg-end));
+    background-attachment: fixed;
+}
+
+button,
+textarea {
+    font-family: inherit;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.app-container {
+    margin: 0 auto;
+    background: rgba(255, 255, 255, .38);
+    border: 1px solid rgba(255, 255, 255, .6);
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(60, 70, 80, .10);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+}
+
+.main-content {
+    padding: 0 40px 48px;
+}
+
+/* 3. NAVBAR */
+.navbar {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    justify-content: space-between;
+    padding: 0 40px;
+    border-bottom: 1px dashed rgb(83, 81, 81);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(to right, var(--bg-start), var(--bg-end));
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.navbar-logo-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.navbar-logo-ai {
+    background: var(--accent-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    height: 100%;
+}
+
+.navbar-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color .2s;
+}
+
+.navbar-link:hover {
+    color: var(--text-main);
+}
+
+.navbar-link.is-active {
+    color: var(--text-main);
+    border-bottom-color: var(--text-main);
+}
+
+/* 4. HERO */
+.hero {
+    text-align: center;
+    padding: 40px 0 28px;
+}
+
+.hero-title {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-main);
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+/* 5. CARDS - reused by every section */
+.cards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    position: relative;
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.cards-row .card {
+    margin-bottom: 0;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Badges */
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--badge-neutral-bg);
+    color: var(--text-muted);
+}
+
+.badge-required {
+    background: var(--badge-required-bg);
+    color: var(--badge-required-text);
+}
+
+/* 6. UPLOAD ZONE - dashed drop area, reused by all three upload cards */
+.upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 112px;
+    padding: 18px;
+    text-align: center;
+    background: var(--surface-soft);
+    border: 1.5px dashed var(--border-dashed);
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+}
+
+.upload-zone:hover {
+    background: #f0efec;
+    border-color: #b5b5ba;
+}
+
+.upload-zone-icon {
+    font-size: 30px;
+}
+
+.upload-zone-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.upload-zone-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.upload-zone-row {
+    flex-direction: row;
+    gap: 14px;
+}
+
+/* 7. FILE / PASTE TEXT TOGGLE (CSS only - no JavaScript needed) */
+.toggle-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-main);
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-switch {
+    width: 34px;
+    height: 20px;
+    border-radius: var(--radius-pill);
+    background: #a6a6ab;
+    position: relative;
+    transition: background .2s;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+    transition: transform .2s;
+}
+
+.toggle-input:checked~.card-header .toggle-switch {
+    background: var(--btn-dark);
+}
+
+.toggle-input:checked~.card-header .toggle-switch::after {
+    transform: translateX(14px);
+}
+
+.toggle-input:focus-visible~.card-header .toggle-switch {
+    outline: 2px solid var(--btn-dark);
+    outline-offset: 2px;
+}
+
+.panel-paste {
+    display: none;
+}
+
+.toggle-input:checked~.card-body .panel-upload {
+    display: none;
+}
+
+.toggle-input:checked~.card-body .panel-paste {
+    display: block;
+}
+
+/* Textareas (paste text + grading instructions) */
+.text-area {
+    width: 100%;
+    min-height: 112px;
+    padding: 14px 16px;
+    resize: vertical;
+    font-size: 13px;
+    color: var(--text-main);
+    background: var(--surface-soft);
+    border: 1px solid #d9d9dc;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.text-area::placeholder {
+    color: #9a9aa0;
+}
+
+.text-area:focus {
+    border-color: #8f8f96;
+    box-shadow: 0 0 0 3px rgba(31, 28, 27, .08);
+}
+
+.panel-paste .text-area {
+    min-height: 112px;
+    background: var(--surface-soft);
+}
+
+/* 8. STUDENT PAPERS - compact sub-cards, no progress bars */
+.paper-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.paper-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--surface-soft);
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-small);
+}
+
+.paper-item-thumb {
+    width: 26px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    border-radius: 5px;
+    font-size: 16px;
+    color: var(--text-muted);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .06);
+}
+
+.paper-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.paper-item-name {
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.paper-item-size {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.paper-item-remove {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+
+.paper-item-remove:hover {
+    background: #e4e3e0;
+    color: var(--text-main);
+}
+
+/* 9. GRADING INSTRUCTIONS */
+.instructions-text-area {
+    min-height: 84px;
+}
+
+/* 10. BUTTONS */
+.btn-small {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-main);
+    background: var(--surface-soft);
+    border: 1px solid #e2e1de;
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-small);
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.btn-small:hover {
+    background: #ecebe8;
+}
+
+.btn-add-papers {
+    background: #fff;
+    font-size: 13px;
+    padding: 8px 16px;
+}
+
+.cta-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    background: var(--btn-dark);
+    border: 0;
+    border-radius: var(--radius-small);
+    box-shadow: 0 6px 16px rgba(31, 28, 27, .25);
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(31, 28, 27, .3);
+}
+
+/* Confirm button under pasted-text box */
+.paste-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.btn-confirm {
+    padding: 8px 18px;
+    font-size: 13px;
+    box-shadow: var(--shadow-small);
+}
+
+/* 12. RESULTS (optional section, shown after grading) */
+.results-section {
+    margin-top: 32px;
+}
+
+/* Success banner - same white card surface, green accent */
+.results-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: #c3e7cf;
+    border: 1px dashed rgb(19, 183, 19);
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-small);
+}
+
+.results-banner-icon {
+    font-size: 20px;
+    color: #2e8b57;
+}
+
+.results-banner-text {
+    flex: 1;
+    font-size: 14px;
+}
+
+/* Stat cards */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 8px;
+    text-align: center;
+    background: var(--surface-soft);
+    box-shadow: var(--shadow-small);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.stat-card:hover {
+    transform: scale(1.04);
+    box-shadow: var(--shadow-card);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.stat-label-danger,
+.stat-value-danger {
+    color: var(--badge-required-text);
+}
+
+/* Tables with banded rows */
+.card-subtitle {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.data-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid #e2e1de;
+}
+
+.data-table td {
+    padding: 10px 14px;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: var(--surface-soft);
+}
+
+.data-table tbody tr {
+    transition: background .15s ease;
+}
+
+.data-table tbody tr:hover {
+    background: #d9d7d2;
+}
+
+.grade-fail {
+    color: var(--badge-required-text);
+}
+
+/* Narrow "Result" column: one-word Correct / Incorrect */
+.result-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: var(--radius-pill);
+}
+
+.result-correct {
+    background: #dff3e6;
+    color: #23744a;
+}
+
+.result-incorrect {
+    background: var(--badge-required-bg);
+    color: var(--badge-required-text);
+}
+
+.results-actions {
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.btn-small-dark {
+    background: var(--btn-dark);
+    border-color: var(--btn-dark);
+    color: #fff;
+}
+
+.btn-small-dark:hover {
+    background: #36312f;
+}
+
+/* Student dropdown */
+.select-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 10px;
+    min-width: 150px;
+    background: var(--surface-soft);
+    border: 1px solid #d9d9dc;
+    box-shadow: var(--shadow-small);
+}
+
+.select-field-label {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.select-field-input {
+    font-family: inherit;
+    font-size: 13px;
+    border: 0;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+}
+
+/* 13. GRADING SCHEME SCREEN */
+.main-content-narrow {
+    margin: 0 auto;
+}
+
+.hero-left {
+    text-align: left;
+}
+
+.hero-left .hero-subtitle {
+    margin: 0;
+    max-width: none;
+    color: var(--text-muted);
+}
+
+/* Grading rules card */
+.rules-icon {
+    font-size: 18px;
+}
+
+.rules-list {
+    padding-left: 22px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* Grade boundaries rows */
+.boundary-table {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.boundary-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 70px;
+    gap: 14px;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.boundary-row-head {
+    padding: 0 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 1px solid #e2e1de;
+}
+
+.boundary-cell-center {
+    justify-self: center;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-main);
+    background: var(--surface-soft);
+    border: 1px solid #d9d9dc;
+    border-radius: var(--radius-small);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.input-field:focus {
+    border-color: #8f8f96;
+    box-shadow: 0 0 0 3px rgba(31, 28, 27, .08);
+}
+
+.add-grade-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-main);
+    background: var(--surface-soft);
+    border: 0;
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.add-grade-button:hover {
+    background: #ecebe8;
+}
+
+/* Bottom buttons */
+.scheme-actions {
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-reset {
+    background: var(--bg-start);
+    border-color: var(--bg-start);
+    padding: 8px 18px;
+    font-size: 13px;
+}
+
+.btn-reset:hover {
+    background: #e6dfd8;
+}
+
+/* 14. ABOUT US SCREEN */
+.mission-icon {
+    font-size: 22px;
+    color: var(--text-muted);
+}
+
+.about-text {
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* How it works: 6 steps with a connecting arrow between them */
+.steps-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 18px;
+}
+
+.step-item {
+    position: relative;
+}
+
+.step-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.step-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.step-text {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+/* Guidelines + limitations sub-cards (same inner colour as file sub-cards) */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.info-item {
+    padding: 14px;
+    background: var(--surface-soft);
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-small);
+}
+
+.info-item-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.info-item-icon {
+    font-size: 16px;
+    color: #2e8b57;
+}
+
+.info-item-icon-warning {
+    color: #d9922b;
+}
+
+.info-item-title {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.info-item-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+/* Source code card */
+.source-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.source-card-icon {
+    font-size: 26px;
+    color: var(--text-muted);
+}
+
+.source-card-text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.source-card .btn-primary {
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 860px) {
+    .paper-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .steps-list {
+        grid-template-columns: repeat(3, 1fr);
+        row-gap: 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
+
+    .navbar {
+        padding: 0 18px;
+    }
+
+    .navbar-links {
+        gap: 16px;
+    }
+
+    .main-content {
+        padding: 0 16px 32px;
+    }
+
+    .cards-row {
+        grid-template-columns: 1fr;
+    }
+
+    .paper-list {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .card-header {
+        flex-wrap: wrap;
+    }
+
+    .boundary-row {
+        grid-template-columns: 1fr 1fr 1fr 40px;
+        gap: 8px;
+    }
+
+    .steps-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .source-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
