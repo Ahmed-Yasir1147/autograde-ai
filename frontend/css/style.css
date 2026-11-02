@@ -178,6 +178,10 @@ textarea {
     margin-bottom: 20px;
 }
 
+.invalid-card {
+    border: 1px solid #f37c6f;
+}
+
 .cards-row .card {
     margin-bottom: 0;
 }
@@ -204,6 +208,13 @@ textarea {
 .card-actions {
     display: flex;
     gap: 8px;
+}
+
+.card-error {
+    font-size: 12px;
+    color: var(--badge-required-text);
+    margin-top: 10px;
+    display: inline-block;
 }
 
 /* Badges */
@@ -357,7 +368,7 @@ textarea {
 .paper-list {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), max-content));
     gap: 10px;
     margin-top: 14px;
 }
@@ -367,6 +378,7 @@ textarea {
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
+    max-width: 200px;
     background: var(--surface-soft);
     border-radius: var(--radius-small);
     box-shadow: var(--shadow-small);
@@ -493,6 +505,47 @@ textarea {
     box-shadow: var(--shadow-small);
 }
 
+/* Loading bar shown while grading */
+.loading-section {
+    max-width: 320px;
+    margin: 16px auto 0;
+    text-align: center;
+}
+
+.loading-bar {
+    height: 6px;
+    overflow: hidden;
+    background: rgba(31, 28, 27, .12);
+    border-radius: var(--radius-pill);
+}
+
+.loading-bar-fill {
+    width: 40%;
+    height: 100%;
+    background: var(--btn-dark);
+    border-radius: var(--radius-pill);
+    animation: loading-slide 1.2s ease-in-out infinite;
+}
+
+@keyframes loading-slide {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
+}
+
+.loading-text {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.btn-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+
 /* 12. RESULTS (optional section, shown after grading) */
 .results-section {
     margin-top: 32px;
@@ -505,20 +558,37 @@ textarea {
     gap: 10px;
     padding: 12px 16px;
     margin-bottom: 20px;
-    background: #c3e7cf;
-    border: 1px dashed rgb(19, 183, 19);
     border-radius: var(--radius-small);
     box-shadow: var(--shadow-small);
 }
 
 .results-banner-icon {
     font-size: 20px;
-    color: #2e8b57;
 }
 
 .results-banner-text {
     flex: 1;
     font-size: 14px;
+}
+
+.success-banner {
+    background: #c3e7cf;
+    border: 1px dashed rgb(19, 183, 19);
+}
+
+.success-banner-icon {
+    font-size: 20px;
+    color: #2e8b57;
+}
+
+.failure-banner {
+    background: #f2a197;
+    border: 1px dashed #d54836;
+}
+
+.failure-banner-icon {
+    font-size: 20px;
+    color: #d54836;
 }
 
 /* Stat cards */
@@ -667,6 +737,11 @@ textarea {
     outline: none;
     cursor: pointer;
 }
+
+.scheme-error-message {
+    border: 1px solid #f37c6f;
+}
+
 
 /* 13. GRADING SCHEME SCREEN */
 .main-content-narrow {
@@ -856,6 +931,11 @@ textarea {
     color: var(--text-muted);
 }
 
+.info-item:hover {
+    transform: scale(1.015);
+    background: #f0efec;
+}
+
 /* Source code card */
 .source-card {
     display: flex;
@@ -879,6 +959,10 @@ textarea {
     white-space: nowrap;
 }
 
+/* Make the hidden attribute always win over display rules like flex or grid */
+[hidden] {
+    display: none !important;
+}
 
 /* RESPONSIVE */
 @media (max-width: 860px) {

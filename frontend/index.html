@@ -1,288 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AutoGrade AI - Grade Exam Papers</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoGrade AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Order matters: config first, then the router (which loads the screens' HTML and JS) -->
+    <script src="javascript/config.js" defer></script>
+    <script src="javascript/router.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
 </head>
+
 <body>
+    <!-- ONE shared icon sprite for all screens -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="icon-upload" viewBox="0 0 24 24">
+            <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+            <path d="M14 3v5h5" />
+            <path d="M12 17v-6" />
+            <path d="m9.5 13 2.5-2.5 2.5 2.5" />
+        </symbol>
+        <symbol id="icon-upload-multi" viewBox="0 0 24 24">
+            <path d="M9 7h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z" />
+            <path d="M5 17V6a2 2 0 0 1 2-2h8" />
+            <path d="M13 18v-5" />
+            <path d="m10.8 14.8 2.2-2.2 2.2 2.2" />
+        </symbol>
+        <symbol id="icon-file" viewBox="0 0 24 24">
+            <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+            <path d="M14 3v5h5" />
+            <path d="M9 13h6M9 17h4" />
+        </symbol>
+        <symbol id="icon-close" viewBox="0 0 24 24">
+            <path d="M6 6l12 12M18 6 6 18" />
+        </symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8 12.5 2.8 2.8L16 10" />
+        </symbol>
+        <symbol id="icon-paperclip" viewBox="0 0 24 24">
+            <path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7" />
+        </symbol>
+        <symbol id="icon-arrow" viewBox="0 0 24 24">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+        </symbol>
+        <symbol id="icon-info" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5" />
+            <path d="M12 7.5v.01" />
+        </symbol>
+        <symbol id="icon-plus" viewBox="0 0 24 24">
+            <path d="M12 5v14M5 12h14" />
+        </symbol>
+        <symbol id="icon-cap" viewBox="0 0 24 24">
+            <path d="M12 5 2 10l10 5 10-5z" />
+            <path d="M6 12.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-3.5" />
+            <path d="M22 10v5" />
+        </symbol>
+        <symbol id="icon-step-upload" viewBox="0 0 24 24">
+            <path d="M12 16V4" />
+            <path d="m7.5 8.5 4.5-4.5 4.5 4.5" />
+            <path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" />
+        </symbol>
+        <symbol id="icon-step-ocr" viewBox="0 0 24 24">
+            <path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" />
+            <path d="M8 9h8M8 12h8M8 15h5" />
+        </symbol>
+        <symbol id="icon-step-format" viewBox="0 0 24 24">
+            <path d="M4 6h16M4 12h10M4 18h14" />
+        </symbol>
+        <symbol id="icon-step-grading" viewBox="0 0 24 24">
+            <path d="m4 16 11-11 4 4L8 20H4z" />
+            <path d="m12 8 4 4" />
+        </symbol>
+        <symbol id="icon-step-marks" viewBox="0 0 24 24">
+            <rect x="5" y="3" width="14" height="18" rx="2" />
+            <path d="M9 8h6M9 12h6M9 16h3" />
+        </symbol>
+        <symbol id="icon-step-review" viewBox="0 0 24 24">
+            <circle cx="9" cy="8" r="3.5" />
+            <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+            <circle cx="17" cy="9" r="2.5" />
+            <path d="M17.5 14a5 5 0 0 1 4 5" />
+        </symbol>
+        <symbol id="icon-label" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="16" height="16" rx="3" />
+            <path d="M8 9h8M8 13h8M8 17h4" />
+        </symbol>
+        <symbol id="icon-check-square" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="16" height="16" rx="3" />
+            <path d="m8.5 12.5 2.5 2.5 4.5-5" />
+        </symbol>
+        <symbol id="icon-nested" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="16" height="16" rx="3" />
+            <path d="M8 9h8M11 13h5M11 17h5" />
+        </symbol>
+        <symbol id="icon-warning" viewBox="0 0 24 24">
+            <path d="M12 4 2.5 20h19z" />
+            <path d="M12 10v5" />
+            <path d="M12 17.5v.01" />
+        </symbol>
+        <symbol id="icon-code" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="16" rx="3" />
+            <path d="m9 9-3 3 3 3M15 9l3 3-3 3M13 8l-2 8" />
+        </symbol>
+        <symbol id="icon-external" viewBox="0 0 24 24">
+            <path d="M7 17 17 7M9 7h8v8" />
+        </symbol>
+    </svg>
 
-  <!-- Reusable SVG icons (referenced with <use href="#...">) -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6"/><path d="m9.5 13 2.5-2.5 2.5 2.5"/></symbol>
-    <symbol id="icon-upload-multi" viewBox="0 0 24 24"><path d="M9 7h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M5 17V6a2 2 0 0 1 2-2h8"/><path d="M13 18v-5"/><path d="m10.8 14.8 2.2-2.2 2.2 2.2"/></symbol>
-    <symbol id="icon-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
-    <symbol id="icon-paperclip" viewBox="0 0 24 24"><path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/></symbol>
-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-  </svg>
-
-
-    <!-- ================= NAVBAR (shared across all screens) ================= -->
+    <!-- ================= NAVBAR (outside every screen, so it never disappears) ================= -->
     <header class="navbar" id="navbar">
-      <a href="index.html" class="navbar-logo" id="navbar-logo">
-        <svg class="navbar-logo-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path d="M16 8 2 14.5 16 21l14-6.5z" fill="#1f3a5f"/>
-          <path d="M8 17.5v5c0 1.8 3.6 3.5 8 3.5s8-1.7 8-3.5v-5L16 21z" fill="#2d5a8c"/>
-          <path d="M30 14.5V22" stroke="#1f3a5f" stroke-width="1.6" stroke-linecap="round"/>
-          <path d="M25 3l.9 2.1L28 6l-2.1.9L25 9l-.9-2.1L22 6l2.1-.9z" fill="#f2a65a"/>
-        </svg>
-        <span class="navbar-logo-text">AutoGrade AI</span>
-      </a>
-      <nav aria-label="Main navigation">
-        <ul class="navbar-links" id="navbar-links">
-          <li><a href="index.html" class="navbar-link is-active" id="nav-home">Home</a></li>
-          <li><a href="grading_scheme.html" class="navbar-link" id="nav-grading-scheme">Grading Scheme</a></li>
-          <li><a href="about.html" class="navbar-link" id="nav-about">About Us</a></li>
-        </ul>
-      </nav>
+        <a href="#home" class="navbar-logo" id="navbar-logo">
+            <svg class="navbar-logo-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path d="M16 8 2 14.5 16 21l14-6.5z" fill="#1f3a5f" />
+                <path d="M8 17.5v5c0 1.8 3.6 3.5 8 3.5s8-1.7 8-3.5v-5L16 21z" fill="#2d5a8c" />
+                <path d="M30 14.5V22" stroke="#1f3a5f" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M25 3l.9 2.1L28 6l-2.1.9L25 9l-.9-2.1L22 6l2.1-.9z" fill="#f2a65a" />
+            </svg>
+            <span class="navbar-logo-text">AutoGrade AI</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <!-- href is a #hash and data-screen is read by router.js. The router sets "is-active". -->
+            <ul class="navbar-links" id="navbar-links">
+                <li><a href="#home" class="navbar-link" data-screen="home" id="nav-home">Home</a></li>
+                <li><a href="#grading" class="navbar-link" data-screen="grading" id="nav-grading-scheme">Grading Scheme</a></li>
+                <li><a href="#about" class="navbar-link" data-screen="about" id="nav-about">About Us</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <main class="main-content" id="home-screen">
-
-      <!-- ================= HERO ================= -->
-      <section class="hero" id="hero-section">
-        <h1 class="hero-title" id="hero-title">Grade Exam Papers</h1>
-        <p class="hero-subtitle" id="hero-subtitle">Upload your exam, answer key, and student responses to get started. AI will handle the rest.</p>
-      </section>
-
-      <!-- ================= EXAM PAPER + ANSWER KEY ================= -->
-      <div class="cards-row" id="exam-and-key-row">
-
-        <!-- Exam paper card -->
-        <section class="card" id="exam-paper-card">
-          <input type="checkbox" class="toggle-input" id="exam-paper-toggle">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2 class="card-title">Exam Paper</h2>
-              <span class="badge badge-required">Required</span>
-            </div>
-            <label class="toggle" for="exam-paper-toggle">
-              <span class="toggle-label">File / Paste Text</span>
-              <span class="toggle-switch"></span>
-            </label>
-          </div>
-          <div class="card-body">
-            <div class="panel-upload" id="exam-paper-upload-panel">
-              <label class="upload-zone" id="exam-paper-upload-zone" for="exam-paper-file">
-                <svg class="icon upload-zone-icon"><use href="#icon-upload"/></svg>
-                <span class="upload-zone-label">Drop exam paper</span>
-                <span class="upload-zone-hint">PDF up to 10 MB</span>
-                <input type="file" id="exam-paper-file" accept="application/pdf" hidden>
-              </label>
-            </div>
-            <div class="panel-paste" id="exam-paper-paste-panel">
-              <textarea class="text-area" id="exam-paper-text" placeholder="Paste the exam questions here..."></textarea>
-            </div>
-          </div>
-        </section>
-
-        <!-- Answer key card -->
-        <section class="card" id="answer-key-card">
-          <input type="checkbox" class="toggle-input" id="answer-key-toggle">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2 class="card-title">Answer Key</h2>
-              <span class="badge">Optional</span>
-            </div>
-            <label class="toggle" for="answer-key-toggle">
-              <span class="toggle-label">File / Paste Text</span>
-              <span class="toggle-switch"></span>
-            </label>
-          </div>
-          <div class="card-body">
-            <div class="panel-upload" id="answer-key-upload-panel">
-              <label class="upload-zone" id="answer-key-upload-zone" for="answer-key-file">
-                <svg class="icon upload-zone-icon"><use href="#icon-upload"/></svg>
-                <span class="upload-zone-label">Drop answer key</span>
-                <span class="upload-zone-hint">PDF up to 10 MB</span>
-                <input type="file" id="answer-key-file" accept="application/pdf" hidden>
-              </label>
-            </div>
-            <div class="panel-paste" id="answer-key-paste-panel">
-              <textarea class="text-area" id="answer-key-text" placeholder="Paste the answer key here..."></textarea>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- ================= STUDENT ANSWER PAPERS ================= -->
-      <section class="card" id="student-papers-card">
-        <input type="checkbox" class="toggle-input" id="student-papers-toggle">
-        <div class="card-header">
-          <div class="card-title-group">
-            <h2 class="card-title">Student Answer Papers</h2>
-            <span class="badge badge-required">Required</span>
-          </div>
-          <label class="toggle" for="student-papers-toggle">
-            <span class="toggle-label">File / Paste Text</span>
-            <span class="toggle-switch"></span>
-          </label>
-        </div>
-
-        <div class="card-body">
-          <!-- File mode -->
-          <div class="panel-upload" id="student-papers-upload-panel">
-            <div class="upload-zone" id="student-papers-upload-zone">
-              <svg class="icon upload-zone-icon"><use href="#icon-upload"/></svg>
-              <span class="upload-zone-label">Drop student answers</span>
-              <span class="upload-zone-hint">Choose multiples files at once</span>
-              <span class="upload-zone-hint">PDF up to 10 MB</span>
-            </div>
-          </div>
-
-          <!-- Paste text mode: add a new text box per pasted paper -->
-          <div class="panel-paste" id="student-papers-paste-panel">
-            <textarea class="text-area" id="student-papers-text" placeholder="Paste a student's answers here..."></textarea>
-            <div class="paste-actions">
-                <button type="button" class="btn-primary btn-confirm" id="student-papers-confirm-button">Add to list</button>
-            </div>
-          </div>  
-        </div>
-
-        <!-- Added papers list (compact sub-cards).
-             File mode shows the real file name + size.
-             Paste-text mode names them "Answer paper 1", "Answer paper 2", ... in order added. -->
-        <ul class="paper-list" id="student-papers-list">
-          <li class="paper-item" id="student-paper-1">
-            <span class="paper-item-thumb"><svg class="icon"><use href="#icon-file"/></svg></span>
-            <div class="paper-item-info">
-              <p class="paper-item-name">Student_Response_01.pdf</p>
-              <p class="paper-item-size">1.2 MB</p>
-            </div>
-            <button type="button" class="paper-item-remove" aria-label="Remove Student_Response_01.pdf"><svg class="icon"><use href="#icon-close"/></svg></button>
-          </li>
-          <li class="paper-item" id="student-paper-2">
-            <span class="paper-item-thumb"><svg class="icon"><use href="#icon-file"/></svg></span>
-            <div class="paper-item-info">
-              <p class="paper-item-name">Student_Response_02.pdf</p>
-              <p class="paper-item-size">980 KB</p>
-            </div>
-            <button type="button" class="paper-item-remove" aria-label="Remove Student_Response_02.pdf"><svg class="icon"><use href="#icon-close"/></svg></button>
-          </li>
-          <li class="paper-item" id="student-paper-3">
-            <span class="paper-item-thumb"><svg class="icon"><use href="#icon-file"/></svg></span>
-            <div class="paper-item-info">
-              <p class="paper-item-name">Student_Response_03.pdf</p>
-              <p class="paper-item-size">980 KB</p>
-            </div>
-            <button type="button" class="paper-item-remove" aria-label="Remove Student_Response_03.pdf"><svg class="icon"><use href="#icon-close"/></svg></button>
-          </li>
-          <li class="paper-item">
-            <span class="paper-item-thumb"><svg class="icon"><use href="#icon-file"/></svg></span>
-            <div class="paper-item-info">
-              <p class="paper-item-name">Answer paper 1</p>
-              <p class="paper-item-size">Pasted text</p>
-            </div>
-            <button type="button" class="paper-item-remove" aria-label="Remove Answer paper 1"><svg class="icon"><use href="#icon-close"/></svg></button>
-          </li>
-        </ul>
-      </section>
-
-      <!-- ================= GRADING INSTRUCTIONS ================= -->
-      <section class="card" id="grading-instructions-card">
-        <div class="card-header" id="grading-instructions-card-header">
-            <div class="card-title-group">
-                <h2 class="card-title">Grading Instructions</h2>
-                <span class="badge">Optional</span>
-            </div>
-        </div>
-        <textarea class="text-area" id="grading-instructions-text" placeholder="Add specific grading rules, rubrics, or feedback preferences..."></textarea>
-      </section>
-
-      <!-- ================= PRIMARY ACTION ================= -->
-      <div class="cta-wrapper" id="grade-papers-wrapper">
-        <button type="button" class="btn-primary" id="grade-papers-button">Grade Papers <svg class="icon"><use href="#icon-arrow"/></svg></button>
-      </div>
-
-
-        <!-- ================= RESULTS (optional - hidden until grading finishes) ================= -->
-        <div class="results-section" id="results-section">
-
-            <!-- Success banner -->
-            <div class="results-banner" id="results-banner">
-                <svg class="icon results-banner-icon"><use href="#icon-check"/></svg>
-                <p class="results-banner-text">Successfully graded 24 papers</p>
-            </div>
-
-            <!-- Summary stat cards -->
-            <div class="stats-row" id="results-stats">
-                <div class="stat-card"><p class="stat-label">Total Papers</p><p class="stat-value">24</p></div>
-                <div class="stat-card"><p class="stat-label">Successfully Checked</p><p class="stat-value">21</p></div>
-                <div class="stat-card"><p class="stat-label stat-label-danger">Failed</p><p class="stat-value stat-value-danger">3</p></div>
-                <div class="stat-card"><p class="stat-label">Total Marks</p><p class="stat-value">100</p></div>
-                <div class="stat-card"><p class="stat-label">Average Marks</p><p class="stat-value">76.4</p></div>
-                <div class="stat-card"><p class="stat-label">Minimum Marks</p><p class="stat-value">42</p></div>
-                <div class="stat-card"><p class="stat-label">Maximum Marks</p><p class="stat-value">96</p></div>
-            </div>
-
-            <!-- Grading results table -->
-            <section class="card" id="grading-results-card">
-                <div class="card-header">
-                <h2 class="card-title">Grading Results</h2>
-                </div>
-                <div class="table-wrapper">
-                <table class="data-table" id="grading-results-table">
-                    <thead>
-                    <tr><th>S.No.</th><th>Roll Number</th><th>Marks</th><th>Grade</th></tr>
-                    </thead>
-                    <tbody>
-                    <tr><td>1</td><td>CS-001</td><td>87/100</td><td>A</td></tr>
-                    <tr><td>2</td><td>CS-002</td><td>74/100</td><td>C</td></tr>
-                    <tr><td>3</td><td>CS-003</td><td>92/100</td><td>A</td></tr>
-                    <tr><td>4</td><td>CS-004</td><td>61/100</td><td>D</td></tr>
-                    <tr><td>5</td><td>CS-005</td><td>42/100</td><td>F</td></tr>
-                    <tr><td>6</td><td>CS-006</td><td>96/100</td><td>A</td></tr>
-                    </tbody>
-                </table>
-                </div>
-                <div class="card-actions results-actions" id="results-download-actions">
-                <button type="button" class="btn-small" id="download-csv-button">Download CSV</button>
-                <button type="button" class="btn-small btn-small-dark" id="download-pdf-button">Download PDF</button>
-                </div>
-            </section>
-
-            <!-- Detailed marks report (one student at a time) -->
-            <section class="card" id="detailed-report-card">
-                <div class="card-header">
-                <div>
-                    <h2 class="card-title">Detailed Marks Report</h2>
-                    <p class="card-subtitle">Review the marks and grading result for an individual student.</p>
-                </div>
-                <label class="select-field" for="student-select">
-                    <span class="select-field-label">Select Student</span>
-                    <select class="select-field-input" id="student-select">
-                    <option>CS-001</option>
-                    <option>CS-002</option>
-                    <option>CS-003</option>
-                    </select>
-                </label>
-                </div>
-                <div class="table-wrapper">
-                <table class="data-table" id="detailed-report-table">
-                    <thead>
-                    <tr><th>Question No.</th><th>Total Marks</th><th>Obtained Marks</th><th>Reasoning</th></tr>
-                    </thead>
-                    <tbody>
-                    <tr><td>Q1</td><td>10</td><td>9</td><td>Correct</td></tr>
-                    <tr><td>Q2</td><td>15</td><td>12</td><td>Correct</td></tr>
-                    <tr><td>Q3(a)</td><td>5</td><td>5</td><td>Correct</td></tr>
-                    <tr><td>Q3(b)</td><td>10</td><td>0</td><td>Incorrect</td></tr>
-                    <tr><td>Q4</td><td>20</td><td>16</td><td>Correct</td></tr>
-                    </tbody>
-                </table>
-                </div>
-                <div class="card-actions results-actions" id="results-download-actions">
-                <button type="button" class="btn-small" id="detail-result-download-csv-button">Download CSV</button>
-                <button type="button" class="btn-small btn-small-dark" id="detail-result-download-pdf-button">Download PDF</button>
-                </div>
-            </section>
-
-        </div>
+    <!-- ================= SCREENS (filled by router.js from the files in pages/) ================= -->
+    <main id="app">
+        <section class="main-content" id="home-screen" hidden></section>
+        <section class="main-content main-content-narrow" id="grading-scheme-screen" hidden></section>
+        <section class="main-content main-content-narrow" id="about-screen" hidden></section>
     </main>
-
 </body>
+
 </html>

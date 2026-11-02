@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoGrade AI - Grade Exam Papers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="javascript/home.js" defer></script>
+</head>
+<body>
+
+  <!-- Reusable SVG icons (referenced with <use href="#...">) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6"/><path d="m9.5 13 2.5-2.5 2.5 2.5"/></symbol>
+    <symbol id="icon-upload-multi" viewBox="0 0 24 24"><path d="M9 7h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M5 17V6a2 2 0 0 1 2-2h8"/><path d="M13 18v-5"/><path d="m10.8 14.8 2.2-2.2 2.2 2.2"/></symbol>
+    <symbol id="icon-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="icon-paperclip" viewBox="0 0 24 24"><path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </svg>
+    
+
+    <main class="main-content" id="home-screen">
+
+      <!-- ================= HERO ================= -->
+      <section class="hero" id="hero-section">
+        <h1 class="hero-title" id="hero-title">Grade Exam Papers</h1>
+        <p class="hero-subtitle" id="hero-subtitle">Upload your exam, answer key, and student responses to get started. AI will handle the rest.</p>
+      </section>
+
+      <!-- ================= EXAM PAPER + ANSWER KEY ================= -->
+      <div class="cards-row" id="exam-and-key-row">
+
+        <!-- Exam paper card -->
+        <section class="card" id="exam-paper-card">
+          <input type="checkbox" class="toggle-input" id="exam-paper-toggle">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">Exam Paper</h2>
+              <span class="badge badge-required">Required</span>
+            </div>
+            <label class="toggle" for="exam-paper-toggle">
+              <span class="toggle-label">File / Paste Text</span>
+              <span class="toggle-switch"></span>
+            </label>
+          </div>
+          <div class="card-body">
+            <div class="panel-upload" id="exam-paper-upload-panel">
+              <label class="upload-zone" id="exam-paper-upload-zone" for="exam-paper-file">
+                <svg class="icon upload-zone-icon"><use href="#icon-upload"/></svg>
+                <span class="upload-zone-label" id="exam-paper-upload-zone-label">Drop exam paper</span>
+                <span class="upload-zone-hint" id="exam-paper-upload-zone-hint">PDF up to 10 MB</span>
+                <input type="file" id="exam-paper-file" accept=".pdf,.doc,.docx,.png,.jpeg,.jpg,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp" hidden>
+              </label>
+            </div>
+            <div class="panel-paste" id="exam-paper-paste-panel">
+              <textarea class="text-area" id="exam-paper-text" placeholder="Paste the exam questions here..."></textarea>
+            </div>
+          </div>
+          <span class="card-error" id="exam-paper-card-error"> </span>
+        </section>
+
+        <!-- Answer key card -->
+        <section class="card" id="answer-key-card">
+          <input type="checkbox" class="toggle-input" id="answer-key-toggle">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">Answer Key</h2>
+              <span class="badge">Optional</span>
+            </div>
+            <label class="toggle" for="answer-key-toggle">
+              <span class="toggle-label">File / Paste Text</span>
+              <span class="toggle-switch"></span>
+            </label>
+          </div>
+          <div class="card-body">
+            <div class="panel-upload" id="answer-key-upload-panel">
+              <label class="upload-zone" id="answer-key-upload-zone" for="answer-key-file">
+                <svg class="icon upload-zone-icon"><use href="#icon-upload"/></svg>
+                <span class="upload-zone-label" id="answer-key-upload-zone-label">Drop answer key</span>
+                <span class="upload-zone-hint" id="answer-key-upload-zone-hint">PDF up to 10 MB</span>
+                <input type="file" id="answer-key-file" accept=".pdf,.doc,.docx,.png,.jpeg,.jpg,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp" hidden>
+              </label>
+            </div>
+            <div class="panel-paste" id="answer-key-paste-panel">
+              <textarea class="text-area" id="answer-key-text" placeholder="Paste the answer key here..."></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= STUDENT ANSWER PAPERS ================= -->
+      <section class="card" id="student-papers-card">
+        <input type="checkbox" class="toggle-input" id="student-papers-toggle">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">Student Answer Papers</h2>
+            <span class="badge badge-required">Required</span>
+          </div>
+          <label class="toggle" for="student-papers-toggle">
+            <span class="toggle-label">File / Paste Text</span>
+            <span class="toggle-switch"></span>
+          </label>
+        </div>
+
+        <div class="card-body">
+          <!-- File mode -->
+          
+
+          <div class="panel-upload" id="answer-key-upload-panel">
+              <label class="upload-zone" id="answer-key-upload-zone" for="student-papers-file">
+                <svg class="icon upload-zone-icon"><use href="#icon-upload"/></svg>
+                <span class="upload-zone-label">Drop student answers</span>
+                <span class="upload-zone-hint">Choose multiples files at once</span>
+                <span class="upload-zone-hint">PDF up to 10 MB</span>
+                <input type="file" id="student-papers-file" accept=".pdf,.doc,.docx,.png,.jpeg,.jpg,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp" multiple hidden>
+              </label>
+            </div>
+
+          <!-- Paste text mode: add a new text box per pasted paper -->
+          <div class="panel-paste" id="student-papers-paste-panel">
+            <textarea class="text-area" id="student-paper-text" placeholder="Paste a student's answers here..."></textarea>
+            <div class="paste-actions">
+                <button type="button" class="btn-primary btn-confirm" id="student-papers-submit-button">Add to list</button>
+            </div>
+          </div>  
+        </div>
+
+        <!-- Added papers list (compact sub-cards).
+             File mode shows the real file name + size.
+             Paste-text mode names them "Answer paper 1", "Answer paper 2", ... in order added. -->
+        <ul class="paper-list" id="student-papers-list">
+          <!--li class="paper-item" id="student-paper-1">
+            <span class="paper-item-thumb"><svg class="icon"><use href="#icon-file"/></svg></span>
+            <div class="paper-item-info">
+              <p class="paper-item-name">Student_Response_01.pdf</p>
+              <p class="paper-item-size">1.2 MB</p>
+            </div>
+            <button type="button" class="paper-item-remove" aria-label="Remove Student_Response_01.pdf"><svg class="icon"><use href="#icon-close"/></svg></button>
+          </li-->
+
+          </ul>
+
+          <span class="card-error" id="student-papers-card-error"> </span>
+
+      </section>
+
+      <!-- ================= GRADING INSTRUCTIONS ================= -->
+      <section class="card" id="grading-instructions-card">
+        <div class="card-header" id="grading-instructions-card-header">
+            <div class="card-title-group">
+                <h2 class="card-title">Grading Instructions</h2>
+                <span class="badge">Optional</span>
+            </div>
+        </div>
+        <textarea class="text-area" id="grading-instructions-text" placeholder="Add specific grading rules, rubrics, or feedback preferences..."></textarea>
+      </section>
+
+      <!-- ================= PRIMARY ACTION ================= -->
+      <div class="cta-wrapper" id="grade-papers-wrapper">
+        <button type="button" class="btn-primary" id="grade-papers-button">Grade Papers <svg class="icon"><use href="#icon-arrow"/></svg></button>
+      </div>
+
+      <div class="loading-section" id="loading-section" hidden>
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+        <p class="loading-text" id="loading-text"></p>
+      </div>
+
+
+        <!-- ================= RESULTS (optional - hidden until grading finishes) ================= -->
+        <div class="results-section" id="results-section">
+
+            <!-- Results banner -->
+            <div class="results-banner" id="results-banner" hidden>
+                <svg class="icon results-banner-icon" id="results-icon"><use href="#icon-check"/></svg>
+                <p class="results-banner-text" id="results-banner-text"></p>
+            </div>
+
+            <div id="results-content" hidden>
+            <!-- Summary stat cards -->
+            <div class="stats-row" id="results-stats">
+                <div class="stat-card"><p class="stat-label">Total Papers</p><p class="stat-value" id="results-total-papers">24</p></div>
+                <div class="stat-card"><p class="stat-label">Grading Successful</p><p class="stat-value" id="results-successfully-checked">21</p></div>
+                <div class="stat-card"><p class="stat-label stat-label-danger">Grading Failed</p><p class="stat-value stat-value-danger" id="results-failed">3</p></div>
+                <div class="stat-card"><p class="stat-label">Total Marks</p><p class="stat-value" id="results-total-marks">100</p></div>
+                <div class="stat-card"><p class="stat-label">Average Marks</p><p class="stat-value" id="results-average-marks">76.4</p></div>
+                <div class="stat-card"><p class="stat-label">Minimum Marks</p><p class="stat-value" id="results-minimum-marks">42</p></div>
+                <div class="stat-card"><p class="stat-label">Maximum Marks</p><p class="stat-value" id="results-maximum-marks">96</p></div>
+            </div>
+
+            <!-- Grading results table -->
+            <section class="card" id="grading-results-card">
+                <div class="card-header">
+                <h2 class="card-title">Grading Results</h2>
+                </div>
+                <div class="table-wrapper">
+                <table class="data-table" id="grading-results-table">
+                    <thead>
+                    <tr><th>S.No.</th><th>Roll Number</th><th id="grading-results-table-marks">Marks</th><th>Grade</th></tr>
+                    </thead>
+                    <tbody id="overall-results-table-body">
+                      
+                    </tbody>
+                </table>
+                </div>
+                <div class="card-actions results-actions" id="results-download-actions">
+                <button type="button" class="btn-small" id="download-csv-button">Download CSV</button>
+                <button type="button" class="btn-small btn-small-dark" id="download-pdf-button">Download PDF</button>
+                </div>
+            </section>
+
+            <!-- Detailed marks report (one student at a time) -->
+            <section class="card" id="detailed-report-card">
+                <div class="card-header">
+                <div>
+                    <h2 class="card-title">Detailed Marks Report</h2>
+                    <p class="card-subtitle">Review the marks and grading result for an individual student.</p>
+                </div>
+                <label class="select-field" for="student-select">
+                    <span class="select-field-label">Select Student</span>
+                    <select class="select-field-input" id="student-select">
+                    
+                    </select>
+                </label>
+                </div>
+                <div class="table-wrapper">
+                <table class="data-table" id="student-detailed-report-table">
+                    <thead>
+                    <tr><th>Question No.</th><th>Total Marks</th><th>Obtained Marks</th><th>Reasoning</th></tr>
+                    </thead>
+                    <tbody id="student-detailed-report-table-body">
+                    
+                    </tbody>
+                </table>
+                </div>
+                <div class="card-actions results-actions" id="results-download-actions">
+                <button type="button" class="btn-small" id="detail-result-download-csv-button">Download CSV</button>
+                <button type="button" class="btn-small btn-small-dark" id="detail-result-download-pdf-button">Download PDF</button>
+                </div>
+            </section>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

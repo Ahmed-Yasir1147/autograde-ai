@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,35 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="javascript/grading_scheme.js" defer></script>
 </head>
+
 <body>
-
-  <!-- Reusable SVG icons -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
-    <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
-    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  </svg>
-
-  <!-- ================= NAVBAR (same as Home) ================= -->
-  <header class="navbar" id="navbar">
-    <a href="index.html" class="navbar-logo" id="navbar-logo">
-      <svg class="navbar-logo-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <path d="M16 8 2 14.5 16 21l14-6.5z" fill="#1f3a5f"/>
-        <path d="M8 17.5v5c0 1.8 3.6 3.5 8 3.5s8-1.7 8-3.5v-5L16 21z" fill="#2d5a8c"/>
-        <path d="M30 14.5V22" stroke="#1f3a5f" stroke-width="1.6" stroke-linecap="round"/>
-        <path d="M25 3l.9 2.1L28 6l-2.1.9L25 9l-.9-2.1L22 6l2.1-.9z" fill="#f2a65a"/>
-      </svg>
-      <span class="navbar-logo-text">AutoGrade AI</span>
-    </a>
-    <nav aria-label="Main navigation">
-      <ul class="navbar-links" id="navbar-links">
-        <li><a href="index.html" class="navbar-link" id="nav-home">Home</a></li>
-        <li><a href="grading_scheme.html" class="navbar-link is-active" id="nav-grading-scheme">Grading Scheme</a></li>
-        <li><a href="about.html" class="navbar-link" id="nav-about">About Us</a></li>
-      </ul>
-    </nav>
-  </header>
 
   <main class="main-content main-content-narrow" id="grading-scheme-screen">
 
@@ -49,7 +25,9 @@
     <section class="card" id="grading-rules-card">
       <div class="card-header">
         <div class="card-title-group">
-          <svg class="icon rules-icon"><use href="#icon-info"/></svg>
+          <svg class="icon rules-icon">
+            <use href="#icon-info" />
+          </svg>
           <h2 class="card-title">Grading Rules</h2>
         </div>
       </div>
@@ -66,58 +44,45 @@
         <h2 class="card-title">Grade Boundaries</h2>
       </div>
 
-        <!-- Column headings -->
-        <div class="boundary-row boundary-row-head" id="grade-boundaries-head">
-          <span>Grade</span>
-          <span>Max (%)</span>
-          <span>Min (%)</span>
-          <span class="boundary-cell-center">Remove</span>
-        </div>
+      <!-- Column headings -->
+      <div class="boundary-row boundary-row-head" id="grade-boundaries-head">
+        <span>Grade</span>
+        <span>Max (%)</span>
+        <span>Min (%)</span>
+        <span class="boundary-cell-center">Remove</span>
+      </div>
 
-        <!-- Grade rows (copy one <div class="boundary-row"> to add a grade) -->
-        <div id="grade-boundaries-rows">
-        <div class="boundary-row" id="grade-row-a">
+      <!-- Grade rows (copy one <div class="boundary-row"> to add a grade) -->
+      <div id="grade-boundaries-rows">
+        <!--div class="boundary-row" id="grade-row-a">
           <input type="text" class="input-field" id="grade-a-name" value="A" aria-label="Grade name">
           <input type="number" class="input-field" id="grade-a-max" value="100" min="0" max="100" aria-label="Maximum percentage">
           <input type="number" class="input-field" id="grade-a-min" value="90" min="0" max="100" aria-label="Minimum percentage">
           <button type="button" class="paper-item-remove boundary-cell-center" id="grade-a-remove" aria-label="Remove grade A"><svg class="icon"><use href="#icon-close"/></svg></button>
-        </div>
-        <div class="boundary-row" id="grade-row-b">
-          <input type="text" class="input-field" id="grade-b-name" value="B" aria-label="Grade name">
-          <input type="number" class="input-field" id="grade-b-max" value="89" min="0" max="100" aria-label="Maximum percentage">
-          <input type="number" class="input-field" id="grade-b-min" value="80" min="0" max="100" aria-label="Minimum percentage">
-          <button type="button" class="paper-item-remove boundary-cell-center" id="grade-b-remove" aria-label="Remove grade B"><svg class="icon"><use href="#icon-close"/></svg></button>
-        </div>
-        <div class="boundary-row" id="grade-row-c">
-          <input type="text" class="input-field" id="grade-c-name" value="C" aria-label="Grade name">
-          <input type="number" class="input-field" id="grade-c-max" value="79" min="0" max="100" aria-label="Maximum percentage">
-          <input type="number" class="input-field" id="grade-c-min" value="70" min="0" max="100" aria-label="Minimum percentage">
-          <button type="button" class="paper-item-remove boundary-cell-center" id="grade-c-remove" aria-label="Remove grade C"><svg class="icon"><use href="#icon-close"/></svg></button>
-        </div>
-        <div class="boundary-row" id="grade-row-d">
-          <input type="text" class="input-field" id="grade-d-name" value="D" aria-label="Grade name">
-          <input type="number" class="input-field" id="grade-d-max" value="69" min="0" max="100" aria-label="Maximum percentage">
-          <input type="number" class="input-field" id="grade-d-min" value="60" min="0" max="100" aria-label="Minimum percentage">
-          <button type="button" class="paper-item-remove boundary-cell-center" id="grade-d-remove" aria-label="Remove grade D"><svg class="icon"><use href="#icon-close"/></svg></button>
-        </div>
-        <div class="boundary-row" id="grade-row-f">
-          <input type="text" class="input-field" id="grade-f-name" value="F" aria-label="Grade name">
-          <input type="number" class="input-field" id="grade-f-max" value="59" min="0" max="100" aria-label="Maximum percentage">
-          <input type="number" class="input-field" id="grade-f-min" value="0" min="0" max="100" aria-label="Minimum percentage">
-          <button type="button" class="paper-item-remove boundary-cell-center" id="grade-f-remove" aria-label="Remove grade F"><svg class="icon"><use href="#icon-close"/></svg></button>
-        </div>
-        </div>
+        </div-->
 
-        <button type="button" class="add-grade-button" id="add-grade-button"><svg class="icon"><use href="#icon-plus"/></svg>Add grade</button>
+      </div>
 
-        <div class="card-actions scheme-actions" id="scheme-actions">
-          <button type="button" class="btn-small btn-reset" id="reset-scheme-button">Reset to default</button>
-          <button type="button" class="btn-primary btn-confirm" id="save-scheme-button">Save scheme</button>
-        </div>
+      <button type="button" class="add-grade-button" id="add-grade-button"><svg class="icon">
+          <use href="#icon-plus" />
+        </svg>Add grade</button>
+
+      <div class="card-actions scheme-actions" id="scheme-actions">
+        <button type="button" class="btn-small btn-reset" id="reset-scheme-button">Reset to default</button>
+        <button type="button" class="btn-primary btn-confirm" id="save-scheme-button">Save scheme</button>
+      </div>
+
+      <span id="invalid-grading-scheme-error" class="card-error"> </span>
 
     </section>
+
+    <div class="results-banner success-banner" id="grading-scheme-success-banner" hidden>
+        <svg class="icon success-banner-icon"><use href="#icon-check"/></svg>
+        <p class="results-banner-text" id="grading-scheme-success-banner-text"></p>
+    </div>
 
   </main>
 
 </body>
+
 </html>

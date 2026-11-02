@@ -10,42 +10,10 @@
 </head>
 <body>
 
-  <!-- Reusable SVG icons -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="icon-cap" viewBox="0 0 24 24"><path d="M12 5 2 10l10 5 10-5z"/><path d="M6 12.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-3.5"/><path d="M22 10v5"/></symbol>
-    <symbol id="icon-step-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
-    <symbol id="icon-step-ocr" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 9h8M8 12h8M8 15h5"/></symbol>
-    <symbol id="icon-step-format" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/></symbol>
-    <symbol id="icon-step-grading" viewBox="0 0 24 24"><path d="m4 16 11-11 4 4L8 20H4z"/><path d="m12 8 4 4"/></symbol>
-    <symbol id="icon-step-marks" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
-    <symbol id="icon-step-review" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14a5 5 0 0 1 4 5"/></symbol>
-    <symbol id="icon-label" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h4"/></symbol>
-    <symbol id="icon-check-square" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></symbol>
-    <symbol id="icon-nested" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M11 13h5M11 17h5"/></symbol>
-    <symbol id="icon-warning" viewBox="0 0 24 24"><path d="M12 4 2.5 20h19z"/><path d="M12 10v5"/><path d="M12 17.5v.01"/></symbol>
-    <symbol id="icon-code" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m9 9-3 3 3 3M15 9l3 3-3 3M13 8l-2 8"/></symbol>
-    <symbol id="icon-external" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></symbol>
-  </svg>
+ 
 
   <!-- ================= NAVBAR (same as other screens) ================= -->
-  <header class="navbar" id="navbar">
-    <a href="index.html" class="navbar-logo" id="navbar-logo">
-      <svg class="navbar-logo-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <path d="M16 8 2 14.5 16 21l14-6.5z" fill="#1f3a5f"/>
-        <path d="M8 17.5v5c0 1.8 3.6 3.5 8 3.5s8-1.7 8-3.5v-5L16 21z" fill="#2d5a8c"/>
-        <path d="M30 14.5V22" stroke="#1f3a5f" stroke-width="1.6" stroke-linecap="round"/>
-        <path d="M25 3l.9 2.1L28 6l-2.1.9L25 9l-.9-2.1L22 6l2.1-.9z" fill="#f2a65a"/>
-      </svg>
-      <span class="navbar-logo-text">AutoGrade AI</span>
-    </a>
-    <nav aria-label="Main navigation">
-        <ul class="navbar-links" id="navbar-links">
-          <li><a href="index.html" class="navbar-link" id="nav-home">Home</a></li>
-          <li><a href="grading_scheme.html" class="navbar-link" id="nav-grading-scheme">Grading Scheme</a></li>
-          <li><a href="about.html" class="navbar-link is-active" id="nav-about">About Us</a></li>
-        </ul>
-      </nav>
-  </header>
+  
 
   <main class="main-content main-content-narrow" id="about-screen">
 
@@ -110,6 +78,10 @@
         <svg class="icon info-item-icon"><use href="#icon-label"/></svg> 
       </div>
       <div class="info-grid" id="guidelines-list">
+        <div class="info-item" id="unique-roll-no">
+          <div class="info-item-head"><h3 class="info-item-title">Unique Roll Numbers & File names</h3></div>
+          <p class="info-item-text">Each file represent on student paper. It should have unique file name and roll number</p>
+        </div>
         <div class="info-item" id="guideline-clear-labels">
           <div class="info-item-head"><h3 class="info-item-title">Clear Question Labels & Marks</h3></div>
           <p class="info-item-text">Use clear question and subquestion IDs; write marks beside questions where possible.</p>
