@@ -42,8 +42,9 @@ class ExamFormatter:
             },
         )
         formatted_exam_paper = ExamPaper.model_validate_json(response.output_text)
-        return formatted_exam_paper.model_dump_json()
-
+        formatted_exam_paper = self._set_marks(formatted_exam_paper.model_dump_json())
+        logger.info(f"Exam paper {formatted_exam_paper}")
+        return formatted_exam_paper
     
     def format_answer_paper(self, answer_paper: str, exam_paper: str, answer_paper_filename: str = "") -> str:   
         logger.info(f"Formatting answer paper: {answer_paper_filename}")
@@ -107,41 +108,65 @@ class ExamFormatter:
         return formatted_answer_key.model_dump_json()
 
     def _set_marks(self, exam_paper: str) -> str:
-        """Sets the marks for paper & each superquestion in the exam paper using subquestions marks."""
+        """Sets the marks for the paper and each superquestion."""
         exam_paper_dict = json.loads(exam_paper)
+
         if exam_paper_dict.get("subjective"):
-            exam_paper_dict["subjective"] = self._set_question_marks(exam_paper_dict.get("subjective", []))
-        exam_paper_dict = self.__set_paper_marks(exam_paper_dict)
+            self._set_question_marks(exam_paper_dict["subjective"])
+
+        exam_paper_dict = self._set_total_marks(exam_paper_dict)
+
         return json.dumps(exam_paper_dict)
 
-    def _set_question_marks(self, questions: dict):
+
+    def _set_question_marks(self, questions: list) -> int:
         total_marks = 0
-        for question in questions():
-            if question["subquestions"]:
-                total_marks += self._set_question_marks(question["subquestions"])
+
+        for question in questions:
+            if question.get("subquestions"):
+                question["marks"] = self._set_question_marks(
+                    question["subquestions"]
+                )
             else:
-                total_marks += question.get("marks", 0)
+                question["marks"] = question.get("marks", 0)
+
+            total_marks += question["marks"]
+
+        return total_marks
+
 
     def _set_total_marks(self, exam_paper_dict: dict):
         total_marks = 0
+
         for question in exam_paper_dict.get("objective", []):
             total_marks += question.get("marks", 0)
+
         for question in exam_paper_dict.get("subjective", []):
             total_marks += question.get("marks", 0)
-        exam_paper_dict["marks"] = total_marks
-        return exam_paper_dict
 
+        exam_paper_dict["marks"] = total_marks
+
+        return exam_paper_dict
+        
     def _validate_answer_paper(self, answer_paper: str, exam_paper: str) -> bool:
         """Validates if answer paper has same number, order and hierarchy of questions as the exam paper."""
         answer_paper_dict = json.loads(answer_paper)
         exam_paper_dict = json.loads(exam_paper)
-        for i in range(len(answer_paper_dict["objective"])):
-            if answer_paper_dict["objective"][i]["question_id"] != exam_paper_dict["objective"][i]["question_id"]:
-                return False
-        return self._validate_subjective_answers(
-            answer_paper_dict["subjective"], 
-            exam_paper_dict["subjective"]
-        )
+        if exam_paper_dict["objective"]:
+            if not answer_paper_dict["objective"]:
+                return false
+            for i in range(len(answer_paper_dict["objective"])):
+                if answer_paper_dict["objective"][i]["question_id"] != exam_paper_dict["objective"][i]["question_id"]:
+                    return False
+        if exam_paper_dict["subjective"]:
+            if not answer_paper_dict["subjective"]:
+                return false
+            return self._validate_subjective_answers(
+                answer_paper_dict["subjective"], 
+                exam_paper_dict["subjective"]
+            )
+        else:
+            return True
 
     def _validate_subjective_answers(self, answer_paper_questions: List, exam_paper_questions: List) -> bool:
         for i in range(len(answer_paper_questions)):

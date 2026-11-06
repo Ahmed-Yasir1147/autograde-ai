@@ -109,9 +109,9 @@ class ExamGrader:
     def _append_total_marks(self, graded_answer_paper: dict) -> dict:
         """Appends total marks obtained by objective and subjective questions in the answer paper."""
         total_marks = 0.0
-        for question in graded_answer_paper["objective"]:        
+        for question in graded_answer_paper["objective"] or []:        
                 total_marks += question["marks_obtained"]
-        for question in graded_answer_paper["subjective"]:
+        for question in graded_answer_paper["subjective"] or []:
                 total_marks += question["marks_obtained"] 
         graded_answer_paper["marks_obtained"] = total_marks
         return graded_answer_paper
@@ -126,11 +126,14 @@ class ExamGrader:
         if not self._in_range(answer_paper_dict["marks_obtained"], exam_paper_dict["marks"]):
             return False
 
-        for i in range(len(graded_objective_questions)):
+        for i in range(len(graded_objective_questions or [])):
             if not self._in_range(graded_objective_questions[i]["marks_obtained"], objective_questions[i]["marks"]):
                 return False
 
-        return self._validate_nested_questions(graded_subjective_questions, subjective_questions)
+        if graded_subjective_questions:
+            return self._validate_nested_questions(graded_subjective_questions, subjective_questions)
+        else:
+            return True
             
             
     def _validate_nested_questions(self, graded_questions: List, exam_questions: List) -> bool:
@@ -141,7 +144,7 @@ class ExamGrader:
 
             graded_subquestions = graded_questions[i]["subquestions"]
             subquestions = exam_questions[i]["subquestions"]
-            if subquestions is not None:
+            if subquestions:
                 if not self._validate_nested_questions(graded_subquestions, subquestions):
                     return False
 

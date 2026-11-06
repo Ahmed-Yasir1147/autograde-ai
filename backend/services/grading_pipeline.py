@@ -159,9 +159,10 @@ class GradingPipeline:
         for grade, range in grading_scheme.items():
             first = range[0]
             second = range[1]
-            if first < 0 or second > 100 or first > second:
+            if first > 100 or second < 0 or first < second:
+                logger.info("false already")
                 return False
-            sum += second - first + 1
+            sum += first - second + 1
         return sum == 101
 
     def _format_grading_response(self, graded_answer_papers: List[str], failed_answer_papers: List[str], exam_paper: str) -> GradingResponse:   
@@ -202,5 +203,6 @@ class GradingPipeline:
             minimum_marks=minimum_marks,
             maximum_marks=maximum_marks,
             graded_answer_papers=graded_answer_papers,
-            failed_answer_papers=failed_answer_papers
+            failed_answer_papers=failed_answer_papers,
+            exam_paper=exam_paper
         )

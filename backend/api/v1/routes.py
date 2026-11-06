@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from core.config import logger, GEMINI_API_KEY, GRADING_SCHEME
 from core.exceptions import FileValidationError
 from services.grading_pipeline import GradingPipeline
+from models.routes_schemas import FilePayload
 from models.routes_schemas import GradingRequest, GradingResponse
 from llama_cloud import LlamaCloud
 from google import genai
@@ -25,19 +26,21 @@ async def grade_exams(
     grading_request: GradingRequest
 ) -> GradingResponse:
     """Main route to grade exams using the GradingPipeline"""
+    exam_paper = to_text_or_bytes(grading_request.exam_paper)
+    answer_key = to_text_or_bytes(grading_request.answer_key)
+    answer_papers = {}
+    for key, value in grading_request.answer_papers.items():
+        answer_papers[key] = to_text_or_bytes(value)
     try:
-        graded_answer_papers, failed_answer_papers = await grading_pipeline.grade_exams(
-            grading_request.exam_paper,
-            grading_request.answer_papers,
-            grading_request.answer_key,
+        grading_response = await grading_pipeline.grade_exams(
+            exam_paper,
+            answer_papers,
+            answer_key,
             grading_request.instructions,
             grading_request.grading_scheme,
             grading_request.concurrency
         )
-        return GradingResponse(
-            graded_answer_papers=graded_answer_papers,
-            failed_answer_papers=failed_answer_papers
-        )
+        return grading_response
     # only FileValidationError in normal flow is thrown by GradingPipeline
     except FileValidationError as e:
         raise HTTPException(
@@ -61,3 +64,7 @@ async def grade_exams(
 async def get_grading_scheme():
     """Send grading scheme to frontend"""
     return GRADING_SCHEME
+
+# utility function to convert FilePayload to str or bytes 
+def to_text_or_bytes(item: str | FilePayload) -> str | bytes:
+    return item if isinstance(item, str) else item.data
