@@ -1,5 +1,7 @@
-.env
+backend/.env
 .vscode/
 
 __pycache__/
 *.py[cod]
+
+backend/test.py
