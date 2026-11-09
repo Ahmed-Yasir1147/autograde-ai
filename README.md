@@ -41,6 +41,6 @@ Manual exam grading is time-consuming, repetitive, and prone to inconsistencies.
 
 ## Deployment
 - **Frontend** Vercel
-- **Backend** Render
+- **Backend** EhtioDeploy
 
 **[Access AutoGrade AI](YOUR_DEPLOYMENT_URL)**
