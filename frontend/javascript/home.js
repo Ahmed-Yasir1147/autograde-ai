@@ -41,6 +41,9 @@ const studentDetailedReportTableBody = document.getElementById("student-detailed
 const gradingResultsTableMarks = document.getElementById("grading-results-table-marks")
 const loadingSection = document.getElementById("loading-section")
 const loadingText = document.getElementById("loading-text")
+const dialog = document.getElementById("guidelines-dialog");
+const dialogViewsGuidelinesBtn = document.getElementById("dialog-view-guidelines-btn")
+
 resultsBanner.hidden = true
 
 const examPaper = {}
@@ -48,6 +51,35 @@ const answerKey = {}
 const answerPapers = {}
 const answerPaperSizes = {}
 let count = 0;
+
+
+// Display the View Guidelines & Limitations
+if (!sessionStorage.getItem("guidelinesDialogSeen")) {
+    dialog.showModal();                  
+}
+
+dialogViewsGuidelinesBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    dialog.close();
+    goToAboutSection("guidelines-card");
+});
+
+// Open the About screen, wait until the card is visible, then scroll to it
+function goToAboutSection(sectionId) {
+    location.hash = "#about";
+
+    const startedAt = performance.now();
+    (function waitAndScroll() {
+        const target = document.getElementById(sectionId);
+        if (target && target.offsetParent !== null) {
+            requestAnimationFrame(() =>
+                target.scrollIntoView({ behavior: "smooth", block: "start" })
+            );
+        } else if (performance.now() - startedAt < 1500) {
+            requestAnimationFrame(waitAndScroll);
+        }
+    })();
+}
 
 // Display selected exam paper file name and size
 examPaperFileInput.addEventListener("change", async function(event) {

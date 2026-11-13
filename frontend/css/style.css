@@ -964,6 +964,125 @@ textarea {
     display: none !important;
 }
 
+/* 15. GUIDELINES DIALOG */
+.guidelines-dialog {
+    margin: auto;                       /* needed: the "* { margin: 0 }" reset otherwise pins it to the top-left */
+    width: calc(100% - 32px);
+    max-width: 480px;
+    padding: 0;
+    overflow: hidden;                   /* keeps the footer inside the rounded corners */
+    color: var(--text-main);
+    background: var(--surface);
+    border: 0;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card), 0 30px 80px rgba(31, 28, 27, .25);
+}
+
+.guidelines-dialog::backdrop {
+    background: rgba(31, 28, 27, .45);
+    backdrop-filter: blur(3px);
+}
+
+/* Fade and rise in */
+.guidelines-dialog[open] { animation: dialog-in .25s ease-out; }
+.guidelines-dialog[open]::backdrop { animation: backdrop-in .25s ease-out; }
+
+@keyframes dialog-in {
+    from { opacity: 0; transform: translateY(12px) scale(.97); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes backdrop-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .guidelines-dialog[open],
+    .guidelines-dialog[open]::backdrop { animation: none; }
+}
+
+.guidelines-dialog-body { padding: 24px 24px 5px; }
+
+.guidelines-dialog-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.guidelines-dialog-badge {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    font-size: 22px;
+    color: #2d5a8c;
+    background: #e6eef7;
+    border-radius: 14px;
+}
+
+.guidelines-dialog-subtitle {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.guidelines-dialog-points {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+}
+
+.dialog-point {
+    padding: 12px 14px;
+    background: var(--surface-soft);
+    border-radius: var(--radius-small);
+    box-shadow: var(--shadow-small);
+}
+
+.dialog-point-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.dialog-point-icon { font-size: 16px; color: #2e8b57; }
+.dialog-point-icon-warning { color: #d9922b; }
+.dialog-point-title { font-size: 13px; font-weight: 600; }
+.dialog-point-text { font-size: 12px; line-height: 1.6; color: var(--text-muted); }
+
+/* Footer: buttons aligned to the right */
+.guidelines-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+}
+
+.guidelines-dialog-footer form { margin: 0; }
+
+.guidelines-dialog-footer .btn-small {
+    padding: 8px 14px;
+    background: var(--surface);
+    text-decoration: none;
+}
+
+@media (max-width: 480px) {
+    .guidelines-dialog-footer { flex-direction: column-reverse; align-items: stretch; }
+    .guidelines-dialog-footer .btn-small,
+    .guidelines-dialog-footer .btn-primary { width: 100%; justify-content: center; }
+}
+
+/* Keeps the sticky navbar from covering a card we scroll to */
+.card { scroll-margin-top: 70px; }
+
+/* Keeps the sticky navbar from covering a card we scroll to */
+.card {
+    scroll-margin-top: 70px;
+}
+
 /* RESPONSIVE */
 @media (max-width: 860px) {
     .paper-list {
