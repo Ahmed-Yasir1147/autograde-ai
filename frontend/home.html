@@ -24,6 +24,44 @@
 
     <main class="main-content" id="home-screen">
 
+      <!-- Dialog to navigate towards Guidelines & Instructions-->
+      <dialog class="guidelines-dialog" id="guidelines-dialog" aria-labelledby="guidelines-dialog-title">
+        <div class="guidelines-dialog-body">
+            <div class="guidelines-dialog-head">
+                <span class="guidelines-dialog-badge"><svg class="icon"><use href="#icon-info"/></svg></span>
+                <div>
+                    <h2 class="card-title" id="guidelines-dialog-title">Before you start</h2>
+                    <p class="guidelines-dialog-subtitle">A quick read will help you get accurate results.</p>
+                </div>
+            </div>
+
+            <ul class="guidelines-dialog-points" id="guidelines-dialog-points">
+                <li class="dialog-point">
+                    <div class="dialog-point-head">
+                        <svg class="icon dialog-point-icon"><use href="#icon-check-square"/></svg>
+                        <h3 class="dialog-point-title">Guidelines</h3>
+                    </div>
+                    <p class="dialog-point-text">How to label questions and format answers so they are read correctly.</p>
+                </li>
+                <li class="dialog-point">
+                    <div class="dialog-point-head">
+                        <svg class="icon dialog-point-icon dialog-point-icon-warning"><use href="#icon-warning"/></svg>
+                        <h3 class="dialog-point-title">Limitations</h3>
+                    </div>
+                    <p class="dialog-point-text">Exam formats and content the system cannot handle yet.</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="guidelines-dialog-footer" id="guidelines-dialog-footer">
+            <a href="#about" class="btn-small" id="dialog-view-guidelines-btn">View Guidelines &amp; Limitations</a>
+            <form method="dialog">
+                <button type="submit" class="btn-primary btn-confirm" id="guidelines-dialog-continue" autofocus>Continue</button>
+            </form>
+        </div>
+    </dialog>
+          
+
       <!-- ================= HERO ================= -->
       <section class="hero" id="hero-section">
         <h1 class="hero-title" id="hero-title">Grade Exam Papers</h1>

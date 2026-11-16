@@ -43,7 +43,6 @@ class ExamFormatter:
         )
         formatted_exam_paper = ExamPaper.model_validate_json(response.output_text)
         formatted_exam_paper = self._set_marks(formatted_exam_paper.model_dump_json())
-        logger.info(f"Exam paper {formatted_exam_paper}")
         return formatted_exam_paper
     
     def format_answer_paper(self, answer_paper: str, exam_paper: str, answer_paper_filename: str = "") -> str:   
@@ -154,13 +153,13 @@ class ExamFormatter:
         exam_paper_dict = json.loads(exam_paper)
         if exam_paper_dict["objective"]:
             if not answer_paper_dict["objective"]:
-                return false
+                return False
             for i in range(len(answer_paper_dict["objective"])):
                 if answer_paper_dict["objective"][i]["question_id"] != exam_paper_dict["objective"][i]["question_id"]:
                     return False
         if exam_paper_dict["subjective"]:
             if not answer_paper_dict["subjective"]:
-                return false
+                return False
             return self._validate_subjective_answers(
                 answer_paper_dict["subjective"], 
                 exam_paper_dict["subjective"]
